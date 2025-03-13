@@ -102,6 +102,18 @@
         </div>
 
     </form>
+    {{-- validarion error --}}
+    @if ($errors->any())
+        <div class="container">
+            <div class="row">
+                <div class="alert alert-danger text-center mt-3">
+                    Por favor selecione pelo menos uma operação.
+                    As parcelas devem estar entre 0 e 999.
+                    O número de exercícios deve estar entre 5 e 50.
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- footer -->
     <footer class="text-center mt-5">
