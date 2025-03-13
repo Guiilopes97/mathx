@@ -42,27 +42,27 @@ class MainController extends Controller
         $number_exercises = $request->number_exercises;
 
         // generate exercises
-        $exercices = [];
-        for ($i = 1; $i < $number_exercises; $i++) {
+        $exercises = [];
+        for ($i = 1; $i <= $number_exercises; $i++) {
 
             $operation = $operations[array_rand($operations)];
             $number1 = rand($min, $max);
             $number2 = rand($min, $max);
 
-            $exercice = '';
+            $exercise = '';
             $solution = '';
 
             switch ($operation) {
                 case 'sum':
-                    $exercice = "$number1 + $number2 =";
+                    $exercise = "$number1 + $number2 =";
                     $solution = $number1 + $number2;
                     break;
                 case 'subtraction':
-                    $exercice = "$number1 - $number2 =";
+                    $exercise = "$number1 - $number2 =";
                     $solution = $number1 - $number2;
                     break;
                 case 'multiplication':
-                    $exercice = "$number1 x $number2 =";
+                    $exercise = "$number1 x $number2 =";
                     $solution = $number1 * $number2;
                     break;
                 case 'division':
@@ -72,7 +72,7 @@ class MainController extends Controller
                         $number2 = 1;
                     }
 
-                    $exercice = "$number1 / $number2 =";
+                    $exercise = "$number1 / $number2 =";
                     $solution = $number1 / $number2;
                     break;
             }
@@ -82,17 +82,17 @@ class MainController extends Controller
                 $solution = round($solution, 2);
             }
 
-            $exercices[] = [
+            $exercises[] = [
                 "operation"=> $operation,
-                'exercice_number' => $i,
-                'exercice' => $exercice." ?",
-                'solution' => "$exercice $solution",
+                'exercise_number' => $i,
+                'exercise' => $exercise,
+                'solution' => "$exercise $solution",
             ];
 
         }
 
 
-        return view('operations', ['exercices' => $exercices]);
+        return view('operations', ['exercises' => $exercises]);
     }
 
     public function printExercises()
