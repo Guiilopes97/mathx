@@ -78,20 +78,44 @@ class MainController extends Controller
         echo "<hr>";
 
         foreach ($exercises as $exercise) {
-            echo '<h2><small>[' . str_pad($exercise['exercise_number'], 2, '0', STR_PAD_LEFT) . ']  ' . $exercise['exercise'].'</small></h2>';
+            echo '<h2><small>[' . $exercise['exercise_number'] . ']  ' . $exercise['exercise'].'</small></h2>';
         }
 
         // sollutions
         echo "<hr>";
         echo '<small>Respostas</small><br>';
         foreach ($exercises as $exercise) {
-            echo '<small>[' . str_pad($exercise['exercise_number'], 2, '0', STR_PAD_LEFT) . ']  ' . $exercise['solution'].'</small><br>';
+            echo '<small>[' . $exercise['exercise_number'] . ']  ' . $exercise['solution'].'</small><br>';
         }
     }
 
     public function exportExercises()
     {
-        echo "exportar exercício para um arquivo de texto";
+        // check if there are exercises in session
+        if (!session()->has('exercises')) {
+            return redirect()->route('home');   
+        }
+
+        // create a file with the exercises
+        $exercises = session('exercises');
+
+        $filename = 'exercises_'. env('APP_NAME').'_'.date('YmdHis').'.txt';
+
+        $content = 'Exercícios de Matemática ('. env('APP_NAME') .')' . "\n\n";
+        foreach ($exercises as $exercise) {
+            $content .= '['.$exercise['exercise_number'] . ']  ' . $exercise['exercise'] . "\n";
+        }
+
+        // sollutions
+        $content .= "\n";
+        $content .= "Respostas\n". str_repeat('-', 20) . "\n";
+        foreach ($exercises as $exercise) {
+            $content .= '['.$exercise['exercise_number'] . ']  ' . $exercise['solution'] . "\n";
+        }
+
+        return response($content, 200)
+                ->header('Content-Type', 'text/plain')
+                ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
     private function generateExercises($i, $operations, $min, $max, ): array
@@ -134,7 +158,7 @@ class MainController extends Controller
         }
 
         return [
-            'exercise_number' => $i,
+            'exercise_number' => str_pad($i, 2, '0', STR_PAD_LEFT),
             "operation" => $operation,
             'exercise' => $exercise,
             'solution' => "$exercise $solution",
